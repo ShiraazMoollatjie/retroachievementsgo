@@ -5,10 +5,8 @@ import (
 )
 
 func (c *Client) GetTopTenUsers() (*TopTenUsersResp, error) {
-	u := fmt.Sprintf("%s/top_ten.php?%s", c.baseURL, c.buildReqQueryParams().Encode())
-
 	var res TopTenUsersResp
-	err := c.get(u, &res)
+	err := c.get(c.getURL("top_ten"), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -16,8 +14,14 @@ func (c *Client) GetTopTenUsers() (*TopTenUsersResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetConsoleIDs() string {
-	panic("implement me!")
+func (c *Client) GetConsoleIDs() (*ConsoleIDsResp, error) {
+	var res ConsoleIDsResp
+	err := c.get(c.getURL("console_id"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) GetGameList() string {
@@ -54,6 +58,10 @@ func (c *Client) ListUserAchievementsByDate() string {
 
 func (c *Client) ListUserAchievementsByDateRange() string {
 	panic("implement me!")
+}
+
+func (c *Client) getURL(endpoint string) string {
+	return fmt.Sprintf("%s/%s.php?%s", c.baseURL, endpoint, c.buildReqQueryParams().Encode())
 }
 
 // TopTenUsersResp is the top ten users. Generated using https://mholt.github.io/json-to-go/.
@@ -110,4 +118,11 @@ type TopTenUsersResp struct {
 			Trueratio interface{} `json:"trueratio"`
 		} `json:"place_10"`
 	} `json:"top10"`
+}
+
+type ConsoleIDsResp struct {
+	Console [][]struct {
+		ID   string `json:"ID"`
+		Name string `json:"Name"`
+	} `json:"console"`
 }
