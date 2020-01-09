@@ -1,0 +1,54 @@
+{
+  "top10": {
+    "place_1": {
+      "user": "MaxMilyin",
+      "score": "419407",
+      "trueratio": "1231268"
+    },
+    "place_2": {
+      "user": "HippopotamusRex",
+      "score": "364266",
+      "trueratio": "1288655"
+    },
+    "place_3": {
+      "user": "BerserkerBR",
+      "score": "312052",
+      "trueratio": "909124"
+    },
+    "place_4": {
+      "user": "Wendigo",
+      "score": "276442",
+      "trueratio": "1032682"
+    },
+    "place_5": {
+      "user": "sigma62",
+      "score": "276241",
+      "trueratio": "652394"
+    },
+    "place_6": {
+      "user": "Veritasu",
+      "score": "228596",
+      "trueratio": "511103"
+    },
+    "place_7": {
+      "user": "oakley",
+      "score": "217221",
+      "trueratio": "473156"
+    },
+    "place_8": {
+      "user": "FabricioPrie",
+      "score": "208094",
+      "trueratio": "510278"
+    },
+    "place_9": {
+      "user": "SeredaVadim",
+      "score": "206806",
+      "trueratio": "683249"
+    },
+    "place_10": {
+      "user": "GOGZero",
+      "score": "199631",
+      "trueratio": "433218"
+    }
+  }
+}
