@@ -24,8 +24,15 @@ func (c *Client) GetConsoleIDs() (*ConsoleIDsResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetGameList() string {
-	panic("implement me!")
+// TODO(shiraaz): Add consoleID parameter
+func (c *Client) GetGameList() (*GameListResp, error) {
+	var res GameListResp
+	err := c.get(c.getURL("game_list"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) GetGameInfo() string {
@@ -125,4 +132,14 @@ type ConsoleIDsResp struct {
 		ID   string `json:"ID"`
 		Name string `json:"Name"`
 	} `json:"console"`
+}
+
+type GameListResp struct {
+	Game [][]struct {
+		Title       string `json:"Title"`
+		ID          string `json:"ID"`
+		ConsoleID   string `json:"ConsoleID"`
+		ImageIcon   string `json:"ImageIcon"`
+		ConsoleName string `json:"ConsoleName"`
+	} `json:"game"`
 }
