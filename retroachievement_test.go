@@ -105,6 +105,25 @@ func TestGameInfoExtended(t *testing.T) {
 	}
 }
 
+func TestUserRank(t *testing.T) {
+	var res *UserRankResp
+	b := unmarshalGoldenFileBytes(t, "user_rank.json", &res)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+	}))
+
+	c := NewClient(withBaseURL(ts.URL))
+	ci, err := c.GetUserRank()
+	if err != nil {
+		t.Errorf("error retrieving users. Error: %+v", err)
+	}
+
+	if !reflect.DeepEqual(ci, res) {
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+	}
+}
+
 func TestGameProgress(t *testing.T) {
 	var res *GameProgressResp
 	b := unmarshalGoldenFileBytes(t, "game_progress.json", &res)

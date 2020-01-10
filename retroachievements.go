@@ -46,6 +46,7 @@ func (c *Client) GetGameInfo() (*GameInfoResp, error) {
 	return &res, nil
 }
 
+// TODO(shiraaz): Add gameID parameter
 func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
 	var res GameInfoExtendedResp
 	err := c.get(c.getURL("game_info_extended"), &res)
@@ -56,6 +57,7 @@ func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
 	return &res, nil
 }
 
+// TODO(shiraaz): Add gameID parameter
 func (c *Client) GetGameProgress() (*GameProgressResp, error) {
 	var res GameProgressResp
 	err := c.get(c.getURL("game_progress"), &res)
@@ -66,8 +68,15 @@ func (c *Client) GetGameProgress() (*GameProgressResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetUserRankAndScore() string {
-	panic("implement me!")
+// TODO(shiraaz): Add gameID and member parameter
+func (c *Client) GetUserRank() (*UserRankResp, error) {
+	var res UserRankResp
+	err := c.get(c.getURL("user_rank"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) GetUserSummary() string {
@@ -230,4 +239,9 @@ type GameProgressResp struct {
 	NumAwardedToUserHardcore   int           `json:"NumAwardedToUserHardcore"`
 	UserCompletion             int           `json:"UserCompletion"`
 	UserCompletionHardcore     int           `json:"UserCompletionHardcore"`
+}
+
+type UserRankResp struct {
+	Score int    `json:"Score"`
+	Rank  string `json:"Rank"`
 }
