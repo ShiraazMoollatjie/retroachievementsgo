@@ -1,0 +1,23 @@
+{
+	"ID": 397,
+	"Title": "3 Ninjas Kick Back",
+	"ConsoleID": 1,
+	"ForumTopicID": 6246,
+	"Flags": 0,
+	"ImageIcon": "\/Images\/000001.png",
+	"ImageTitle": "\/Images\/020770.png",
+	"ImageIngame": "\/Images\/020771.png",
+	"ImageBoxArt": "\/Images\/020773.png",
+	"Publisher": "Sony Imagesoft",
+	"Developer": "Malibu Interactive",
+	"Genre": "Action",
+	"Released": "1994",
+	"IsFinal": false,
+	"ConsoleName": "Mega Drive",
+	"RichPresencePatch": "d41d8cd98f00b204e9800998ecf8427e",
+	"NumAchievements": 0,
+	"NumDistinctPlayersCasual": 0,
+	"NumDistinctPlayersHardcore": 0,
+	"Achievements": [
+	]
+}

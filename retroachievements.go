@@ -46,8 +46,14 @@ func (c *Client) GetGameInfo() (*GameInfoResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetEnhancedGameInfo() string {
-	panic("implement me!")
+func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
+	var res GameInfoExtendedResp
+	err := c.get(c.getURL("game_info_extended"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) GetGameProgress() string {
@@ -168,4 +174,27 @@ type GameInfoResp struct {
 	Released     string      `json:"Released"`
 	GameTitle    string      `json:"GameTitle"`
 	Console      string      `json:"Console"`
+}
+
+type GameInfoExtendedResp struct {
+	ID                         int           `json:"ID"`
+	Title                      string        `json:"Title"`
+	ConsoleID                  int           `json:"ConsoleID"`
+	ForumTopicID               int           `json:"ForumTopicID"`
+	Flags                      int           `json:"Flags"`
+	ImageIcon                  string        `json:"ImageIcon"`
+	ImageTitle                 string        `json:"ImageTitle"`
+	ImageIngame                string        `json:"ImageIngame"`
+	ImageBoxArt                string        `json:"ImageBoxArt"`
+	Publisher                  string        `json:"Publisher"`
+	Developer                  string        `json:"Developer"`
+	Genre                      string        `json:"Genre"`
+	Released                   string        `json:"Released"`
+	IsFinal                    bool          `json:"IsFinal"`
+	ConsoleName                string        `json:"ConsoleName"`
+	RichPresencePatch          string        `json:"RichPresencePatch"`
+	NumAchievements            int           `json:"NumAchievements"`
+	NumDistinctPlayersCasual   int           `json:"NumDistinctPlayersCasual"`
+	NumDistinctPlayersHardcore int           `json:"NumDistinctPlayersHardcore"`
+	Achievements               []interface{} `json:"Achievements"`
 }
