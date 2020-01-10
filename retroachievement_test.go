@@ -44,7 +44,7 @@ func TestConsoleIDs(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -63,7 +63,7 @@ func TestGameList(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -82,7 +82,7 @@ func TestGameInfo(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -101,7 +101,26 @@ func TestGameInfoExtended(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+	}
+}
+
+func TestUserRecent(t *testing.T) {
+	var res *UserRecentResp
+	b := unmarshalGoldenFileBytes(t, "user_recent.json", &res)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+	}))
+
+	c := NewClient(withBaseURL(ts.URL))
+	ci, err := c.GetUserRecent()
+	if err != nil {
+		t.Errorf("error retrieving users. Error: %+v", err)
+	}
+
+	if !reflect.DeepEqual(ci, res) {
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -120,7 +139,7 @@ func TestUserRank(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -139,7 +158,7 @@ func TestGameProgress(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", ci, res)
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 

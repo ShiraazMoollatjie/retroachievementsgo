@@ -2,7 +2,6 @@ package retroachievementsgo
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 )
 
@@ -27,7 +26,6 @@ func TestUnmarshalRetroInt(t *testing.T) {
 		t.Run(tC.desc, func(t *testing.T) {
 			var res *RetroIntPlaceHolder
 			json.Unmarshal([]byte(tC.json), &res)
-			fmt.Printf("%+v", res)
 			if res.Value != tC.expected {
 				t.Errorf("Incorrect RetroInt. \nExpected: %v\nActual: %v\n", tC.expected, res.Value)
 			}

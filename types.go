@@ -2,7 +2,6 @@ package retroachievementsgo
 
 import (
 	"encoding/json"
-	"fmt"
 	"strconv"
 )
 
@@ -24,7 +23,6 @@ func (ri *RetroInt) UnmarshalJSON(data []byte) error {
 		if err != nil {
 			return err
 		}
-		fmt.Printf("value is %v\n", i)
 	}
 
 	*ri = RetroInt(i)

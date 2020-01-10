@@ -79,6 +79,16 @@ func (c *Client) GetUserRank() (*UserRankResp, error) {
 	return &res, nil
 }
 
+func (c *Client) GetUserRecent() (*UserRecentResp, error) {
+	var res UserRecentResp
+	err := c.get(c.getURL("user_recent"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 func (c *Client) GetUserSummary() string {
 	panic("implement me!")
 }
@@ -244,4 +254,20 @@ type GameProgressResp struct {
 type UserRankResp struct {
 	Score int    `json:"Score"`
 	Rank  string `json:"Rank"`
+}
+
+type UserRecentResp struct {
+	Recent [][]struct {
+		GameID                  string      `json:"GameID"`
+		ConsoleID               string      `json:"ConsoleID"`
+		ConsoleName             string      `json:"ConsoleName"`
+		Title                   string      `json:"Title"`
+		ImageIcon               string      `json:"ImageIcon"`
+		LastPlayed              string      `json:"LastPlayed"`
+		MyVote                  interface{} `json:"MyVote"`
+		NumPossibleAchievements RetroInt    `json:"NumPossibleAchievements"`
+		PossibleScore           RetroInt    `json:"PossibleScore"`
+		NumAchieved             RetroInt    `json:"NumAchieved"`
+		ScoreAchieved           RetroInt    `json:"ScoreAchieved"`
+	} `json:"recent"`
 }
