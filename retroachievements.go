@@ -35,8 +35,15 @@ func (c *Client) GetGameList() (*GameListResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetGameInfo() string {
-	panic("implement me!")
+// TODO(shiraaz): Add gameID parameter
+func (c *Client) GetGameInfo() (*GameInfoResp, error) {
+	var res GameInfoResp
+	err := c.get(c.getURL("game_info"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) GetEnhancedGameInfo() string {
@@ -142,4 +149,23 @@ type GameListResp struct {
 		ImageIcon   string `json:"ImageIcon"`
 		ConsoleName string `json:"ConsoleName"`
 	} `json:"game"`
+}
+
+type GameInfoResp struct {
+	Title        string      `json:"Title"`
+	ForumTopicID string      `json:"ForumTopicID"`
+	ConsoleID    string      `json:"ConsoleID"`
+	ConsoleName  string      `json:"ConsoleName"`
+	Flags        interface{} `json:"Flags"`
+	ImageIcon    string      `json:"ImageIcon"`
+	GameIcon     string      `json:"GameIcon"`
+	ImageTitle   string      `json:"ImageTitle"`
+	ImageIngame  string      `json:"ImageIngame"`
+	ImageBoxArt  string      `json:"ImageBoxArt"`
+	Publisher    string      `json:"Publisher"`
+	Developer    string      `json:"Developer"`
+	Genre        string      `json:"Genre"`
+	Released     string      `json:"Released"`
+	GameTitle    string      `json:"GameTitle"`
+	Console      string      `json:"Console"`
 }
