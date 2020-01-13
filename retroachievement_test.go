@@ -239,7 +239,7 @@ func TestUserRank(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+		t.Errorf("Unexpected user ranks. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -258,7 +258,7 @@ func TestUserProgress(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+		t.Errorf("Unexpected user progress. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -277,7 +277,7 @@ func TestUserSummary(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+		t.Errorf("Unexpected user summary. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -296,7 +296,8 @@ func TestListUserAchievementsByDate(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+		t.Errorf("Unexpected user achievement lists. "+
+			"Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -315,7 +316,7 @@ func TestListUserAchievementsByDateRange(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+		t.Errorf("Unexpected user achievements. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
