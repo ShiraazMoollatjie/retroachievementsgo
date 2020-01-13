@@ -29,7 +29,6 @@ func (ri *RetroInt) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-
 // TopTenUsersResp is the top ten users. Generated using https://mholt.github.io/json-to-go/.
 type TopTenUsersResp struct {
 	Top10 struct {
@@ -192,3 +191,14 @@ type UserRecentResp struct {
 		ScoreAchieved           RetroInt    `json:"ScoreAchieved"`
 	} `json:"recent"`
 }
+
+type UserProgress struct {
+	NumPossibleAchievements RetroInt `json:"NumPossibleAchievements"`
+	PossibleScore           RetroInt `json:"PossibleScore"`
+	NumAchieved             RetroInt `json:"NumAchieved"`
+	ScoreAchieved           RetroInt `json:"ScoreAchieved"`
+	NumAchievedHardcore     RetroInt `json:"NumAchievedHardcore"`
+	ScoreAchievedHardcore   RetroInt `json:"ScoreAchievedHardcore"`
+}
+
+type UserProgressResp map[string]UserProgress
