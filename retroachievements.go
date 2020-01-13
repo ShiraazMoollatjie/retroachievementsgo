@@ -84,7 +84,6 @@ func (c *Client) GetGameProgress(gameID string) (*GameProgressResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add gameID and member parameter
 func (c *Client) GetUserRank(user, gameID string) (*UserRankResp, error) {
 	var res UserRankResp
 	var p = make(map[string]string)
@@ -151,6 +150,7 @@ func (c *Client) GetUserSummary(user string) (*UserSummaryResp, error) {
 	return &res, nil
 }
 
+// TODO(shiraaz): Add member and date
 func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
 	var res UserByDateResp
 	err := c.get(c.getURL("user_by_date", make(map[string]string)), &res)
@@ -161,6 +161,7 @@ func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
 	return &res, nil
 }
 
+// TODO(shiraaz): Add member, startdate and enddate
 func (c *Client) ListUserAchievementsByDateRange() (*UserByDateResp, error) {
 	var res UserByDateResp
 	err := c.get(c.getURL("user_by_date", make(map[string]string)), &res)
