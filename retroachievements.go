@@ -39,10 +39,14 @@ func (c *Client) GetGameList(consoleID string) (*GameListResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add gameID parameter
-func (c *Client) GetGameInfo() (*GameInfoResp, error) {
+func (c *Client) GetGameInfo(gameID string) (*GameInfoResp, error) {
 	var res GameInfoResp
-	err := c.get(c.getURL("game_info", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if gameID != "" {
+		p["game"] = gameID
+	}
+
+	err := c.get(c.getURL("game_info", p), &res)
 	if err != nil {
 		return nil, err
 	}
