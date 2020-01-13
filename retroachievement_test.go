@@ -7,7 +7,9 @@ import (
 	"net/http/httptest"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestTopTenUsers(t *testing.T) {
@@ -211,7 +213,7 @@ func TestUserRecent(t *testing.T) {
 		user string
 	}{
 		{
-			desc: "No user id",
+			desc: "No user",
 		},
 		{
 			desc: "user=shiraaz",
@@ -225,7 +227,7 @@ func TestUserRecent(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				uID := r.URL.Query().Get("member")
 				if uID != tC.user {
-					t.Errorf("Unexpected userIDs. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+					t.Errorf("Unexpected user. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
 				}
 				w.WriteHeader(http.StatusOK)
 				w.Write(b)
@@ -251,10 +253,10 @@ func TestUserRank(t *testing.T) {
 		gameID string
 	}{
 		{
-			desc: "No game, user id",
+			desc: "No gameID, user",
 		},
 		{
-			desc:   "gameID=2, userID=shiraaz",
+			desc:   "gameID=2, user=shiraaz",
 			gameID: "2",
 			user:   "shiraaz",
 		},
@@ -296,10 +298,10 @@ func TestUserProgress(t *testing.T) {
 		user   string
 	}{
 		{
-			desc: "No game, user id",
+			desc: "No gameID, user",
 		},
 		{
-			desc:   "gameID=2, userID=shiraaz",
+			desc:   "gameID=2, user=shiraaz",
 			gameID: "2",
 			user:   "shiraaz",
 		},
@@ -374,41 +376,109 @@ func TestUserSummary(t *testing.T) {
 }
 
 func TestListUserAchievementsByDate(t *testing.T) {
-	var res *UserByDateResp
-	b := unmarshalGoldenFileBytes(t, "user_by_date.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.ListUserAchievementsByDate()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc        string
+		user        string
+		start       time.Time
+		expectStart bool
+	}{
+		{
+			desc: "No user, no start",
+		},
+		{
+			desc:        "user=shiraaz",
+			user:        "shiraaz",
+			start:       time.Date(2010, 10, 2, 6, 0, 0, 0, time.UTC),
+			expectStart: true,
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *UserByDateResp
+			b := unmarshalGoldenFileBytes(t, "user_by_date.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uID := r.URL.Query().Get("member")
+				if uID != tC.user {
+					t.Errorf("Unexpected user. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				start := r.URL.Query().Get("date")
+				exp := strconv.FormatInt(tC.start.Unix(), 10)
+				if start != exp && tC.expectStart {
+					t.Errorf("Unexpected start date. Expected:\n%v\nActual:\n%v\n", exp, start)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected user achievement lists. "+
-			"Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.ListUserAchievementsByDate(tC.user, tC.start)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected user achievement lists. "+
+					"Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 
 func TestListUserAchievementsByDateRange(t *testing.T) {
-	var res *UserByDateResp
-	b := unmarshalGoldenFileBytes(t, "user_by_date.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.ListUserAchievementsByDateRange()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc        string
+		user        string
+		start       time.Time
+		expectStart bool
+		end         time.Time
+		expectEnd   bool
+	}{
+		{
+			desc: "No user",
+		},
+		{
+			desc:        "user=shiraaz",
+			user:        "shiraaz",
+			start:       time.Date(2010, 10, 2, 6, 0, 0, 0, time.UTC),
+			expectStart: true,
+			end:         time.Date(2015, 10, 2, 6, 0, 0, 0, time.UTC),
+			expectEnd:   true,
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *UserByDateResp
+			b := unmarshalGoldenFileBytes(t, "user_by_date.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uID := r.URL.Query().Get("member")
+				if uID != tC.user {
+					t.Errorf("Unexpected user. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				start := r.URL.Query().Get("startdate")
+				exp := strconv.FormatInt(tC.start.Unix(), 10)
+				if start != exp && tC.expectStart {
+					t.Errorf("Unexpected start date. Expected:\n%v\nActual:\n%v\n", exp, start)
+				}
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected user achievements. Expected:\n%v\nActual:\n%v\n", res, ci)
+				end := r.URL.Query().Get("enddate")
+				exp = strconv.FormatInt(tC.end.Unix(), 10)
+				if end != exp && tC.expectStart {
+					t.Errorf("Unexpected start date. Expected:\n%v\nActual:\n%v\n", exp, end)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
+
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.ListUserAchievementsByDateRange(tC.user, tC.start, tC.end)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected user achievements. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 

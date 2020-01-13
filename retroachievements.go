@@ -2,6 +2,8 @@ package retroachievementsgo
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 )
 
 func (c *Client) GetTopTenUsers() (*TopTenUsersResp, error) {
@@ -150,10 +152,18 @@ func (c *Client) GetUserSummary(user string) (*UserSummaryResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add member and date
-func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
+func (c *Client) ListUserAchievementsByDate(user string, start time.Time) (*UserByDateResp, error) {
 	var res UserByDateResp
-	err := c.get(c.getURL("user_by_date", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if user != "" {
+		p["member"] = user
+	}
+
+	if !start.IsZero() {
+		p["date"] = strconv.FormatInt(start.Unix(), 10)
+	}
+
+	err := c.get(c.getURL("user_by_date", p), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -161,10 +171,22 @@ func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add member, startdate and enddate
-func (c *Client) ListUserAchievementsByDateRange() (*UserByDateResp, error) {
+func (c *Client) ListUserAchievementsByDateRange(user string, start, end time.Time) (*UserByDateResp, error) {
 	var res UserByDateResp
-	err := c.get(c.getURL("user_by_date", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if user != "" {
+		p["member"] = user
+	}
+
+	if !start.IsZero() {
+		p["startdate"] = strconv.FormatInt(start.Unix(), 10)
+	}
+
+	if !end.IsZero() {
+		p["enddate"] = strconv.FormatInt(end.Unix(), 10)
+	}
+
+	err := c.get(c.getURL("user_by_date", p), &res)
 	if err != nil {
 		return nil, err
 	}
