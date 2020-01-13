@@ -109,10 +109,6 @@ func (c *Client) GetUserSummary() (*UserSummaryResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetUserFeed() string {
-	panic("implement me!")
-}
-
 func (c *Client) ListUserAchievementsByDate() string {
 	panic("implement me!")
 }
