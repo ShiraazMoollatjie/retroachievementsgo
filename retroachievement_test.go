@@ -93,10 +93,10 @@ func TestGameInfo(t *testing.T) {
 		gameID string
 	}{
 		{
-			desc: "No game id",
+			desc: "No gameID",
 		},
 		{
-			desc:   "game id = 2",
+			desc:   "gameID = 2",
 			gameID: "2",
 		},
 	}
@@ -107,7 +107,7 @@ func TestGameInfo(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				gID := r.URL.Query().Get("game")
 				if gID != tC.gameID {
-					t.Errorf("Unexpected game ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
+					t.Errorf("Unexpected gameIDs. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
 				}
 				w.WriteHeader(http.StatusOK)
 				w.Write(b)
@@ -133,10 +133,10 @@ func TestGameInfoExtended(t *testing.T) {
 		gameID string
 	}{
 		{
-			desc: "No game id",
+			desc: "No gameID",
 		},
 		{
-			desc:   "game id = 2",
+			desc:   "gameID = 2",
 			gameID: "2",
 		},
 	}
@@ -147,7 +147,7 @@ func TestGameInfoExtended(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				gID := r.URL.Query().Get("game")
 				if gID != tC.gameID {
-					t.Errorf("Unexpected game ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
+					t.Errorf("Unexpected gameIDs. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
 				}
 				w.WriteHeader(http.StatusOK)
 				w.Write(b)
@@ -172,10 +172,10 @@ func TestGameProgress(t *testing.T) {
 		gameID string
 	}{
 		{
-			desc: "No game id",
+			desc: "No gameID",
 		},
 		{
-			desc:   "game id = 2",
+			desc:   "gameID = 2",
 			gameID: "2",
 		},
 	}
@@ -186,7 +186,7 @@ func TestGameProgress(t *testing.T) {
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				gID := r.URL.Query().Get("game")
 				if gID != tC.gameID {
-					t.Errorf("Unexpected game ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
+					t.Errorf("Unexpected gameIDs. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
 				}
 				w.WriteHeader(http.StatusOK)
 				w.Write(b)
@@ -206,78 +206,170 @@ func TestGameProgress(t *testing.T) {
 }
 
 func TestUserRecent(t *testing.T) {
-	var res *UserRecentResp
-	b := unmarshalGoldenFileBytes(t, "user_recent.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetUserRecent()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc string
+		user string
+	}{
+		{
+			desc: "No user id",
+		},
+		{
+			desc: "user=shiraaz",
+			user: "shiraaz",
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *UserRecentResp
+			b := unmarshalGoldenFileBytes(t, "user_recent.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uID := r.URL.Query().Get("member")
+				if uID != tC.user {
+					t.Errorf("Unexpected userIDs. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected user recents. Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetUserRecent(tC.user)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected user recents. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 
 func TestUserRank(t *testing.T) {
-	var res *UserRankResp
-	b := unmarshalGoldenFileBytes(t, "user_rank.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetUserRank()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc   string
+		user   string
+		gameID string
+	}{
+		{
+			desc: "No game, user id",
+		},
+		{
+			desc:   "gameID=2, userID=shiraaz",
+			gameID: "2",
+			user:   "shiraaz",
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *UserRankResp
+			b := unmarshalGoldenFileBytes(t, "user_rank.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uID := r.URL.Query().Get("member")
+				if uID != tC.user {
+					t.Errorf("Unexpected user. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				gID := r.URL.Query().Get("game")
+				if gID != tC.gameID {
+					t.Errorf("Unexpected gameIDs. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected user ranks. Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetUserRank(tC.user, tC.gameID)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected user ranks. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 
 func TestUserProgress(t *testing.T) {
-	var res *UserProgressResp
-	b := unmarshalGoldenFileBytes(t, "user_progress.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetUserProgress()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc   string
+		gameID string
+		user   string
+	}{
+		{
+			desc: "No game, user id",
+		},
+		{
+			desc:   "gameID=2, userID=shiraaz",
+			gameID: "2",
+			user:   "shiraaz",
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *UserProgressResp
+			b := unmarshalGoldenFileBytes(t, "user_progress.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uID := r.URL.Query().Get("member")
+				if uID != tC.user {
+					t.Errorf("Unexpected user. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				gID := r.URL.Query().Get("game")
+				if gID != tC.gameID {
+					t.Errorf("Unexpected gameIDs. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected user progress. Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetUserProgress(tC.user, tC.gameID)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected user progress. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 
 func TestUserSummary(t *testing.T) {
-	var res *UserSummaryResp
-	b := unmarshalGoldenFileBytes(t, "user_summary.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetUserSummary()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc string
+		user string
+	}{
+		{
+			desc: "No user",
+		},
+		{
+			desc: "user=shiraaz",
+			user: "shiraaz",
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *UserSummaryResp
+			b := unmarshalGoldenFileBytes(t, "user_summary.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uID := r.URL.Query().Get("member")
+				if uID != tC.user {
+					t.Errorf("Unexpected user. Expected:\n%v\nActual:\n%v\n", tC.user, uID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected user summary. Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetUserSummary(tC.user)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected user summary. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 

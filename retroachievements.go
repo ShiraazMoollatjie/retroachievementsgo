@@ -85,9 +85,17 @@ func (c *Client) GetGameProgress(gameID string) (*GameProgressResp, error) {
 }
 
 // TODO(shiraaz): Add gameID and member parameter
-func (c *Client) GetUserRank() (*UserRankResp, error) {
+func (c *Client) GetUserRank(user, gameID string) (*UserRankResp, error) {
 	var res UserRankResp
-	err := c.get(c.getURL("user_rank", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if gameID != "" {
+		p["game"] = gameID
+	}
+	if user != "" {
+		p["member"] = user
+	}
+
+	err := c.get(c.getURL("user_rank", p), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -95,9 +103,14 @@ func (c *Client) GetUserRank() (*UserRankResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetUserRecent() (*UserRecentResp, error) {
+func (c *Client) GetUserRecent(user string) (*UserRecentResp, error) {
 	var res UserRecentResp
-	err := c.get(c.getURL("user_recent", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if user != "" {
+		p["member"] = user
+	}
+
+	err := c.get(c.getURL("user_recent", p), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -105,9 +118,17 @@ func (c *Client) GetUserRecent() (*UserRecentResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetUserProgress() (*UserProgressResp, error) {
+func (c *Client) GetUserProgress(user, gameID string) (*UserProgressResp, error) {
 	var res UserProgressResp
-	err := c.get(c.getURL("user_progress", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if gameID != "" {
+		p["game"] = gameID
+	}
+	if user != "" {
+		p["member"] = user
+	}
+
+	err := c.get(c.getURL("user_progress", p), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -115,9 +136,14 @@ func (c *Client) GetUserProgress() (*UserProgressResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetUserSummary() (*UserSummaryResp, error) {
+func (c *Client) GetUserSummary(user string) (*UserSummaryResp, error) {
 	var res UserSummaryResp
-	err := c.get(c.getURL("user_summary", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if user != "" {
+		p["member"] = user
+	}
+
+	err := c.get(c.getURL("user_summary", p), &res)
 	if err != nil {
 		return nil, err
 	}
