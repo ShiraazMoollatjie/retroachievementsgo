@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 )
@@ -15,7 +14,6 @@ type Client struct {
 	baseURL  string
 	http     *http.Client
 	username string
-	debug    bool
 }
 
 // Arguments are used for passing query parameters to the dev.to api.
@@ -40,12 +38,6 @@ type Option func(*Client)
 func withBaseURL(url string) Option {
 	return func(c *Client) {
 		c.baseURL = url
-	}
-}
-
-func withDebug(debug bool) Option {
-	return func(c *Client) {
-		c.debug = debug
 	}
 }
 
@@ -78,9 +70,6 @@ func NewClient(opts ...Option) *Client {
 
 // get returns an error if the http client cannot perform a HTTP GET for the provided URL.
 func (c *Client) get(url string, target interface{}) error {
-	if c.debug {
-		log.Printf("visiting url: %v", url)
-	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
