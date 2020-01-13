@@ -54,10 +54,14 @@ func (c *Client) GetGameInfo(gameID string) (*GameInfoResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add gameID parameter
-func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
+func (c *Client) GetGameInfoExtended(gameID string) (*GameInfoExtendedResp, error) {
 	var res GameInfoExtendedResp
-	err := c.get(c.getURL("game_info_extended", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if gameID != "" {
+		p["game"] = gameID
+	}
+
+	err := c.get(c.getURL("game_info_extended", p), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -65,10 +69,14 @@ func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add gameID parameter
-func (c *Client) GetGameProgress() (*GameProgressResp, error) {
+func (c *Client) GetGameProgress(gameID string) (*GameProgressResp, error) {
 	var res GameProgressResp
-	err := c.get(c.getURL("game_progress", make(map[string]string)), &res)
+	var p = make(map[string]string)
+	if gameID != "" {
+		p["game"] = gameID
+	}
+
+	err := c.get(c.getURL("game_progress", p), &res)
 	if err != nil {
 		return nil, err
 	}

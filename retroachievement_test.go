@@ -81,7 +81,7 @@ func TestGameList(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(ci, res) {
-				t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+				t.Errorf("Unexpected game lists. Expected:\n%v\nActual:\n%v\n", res, ci)
 			}
 		})
 	}
@@ -93,7 +93,7 @@ func TestGameInfo(t *testing.T) {
 		gameID string
 	}{
 		{
-			desc: "No gaame id",
+			desc: "No game id",
 		},
 		{
 			desc:   "game id = 2",
@@ -105,9 +105,9 @@ func TestGameInfo(t *testing.T) {
 			var res *GameInfoResp
 			b := unmarshalGoldenFileBytes(t, "game_info.json", &res)
 			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				cID := r.URL.Query().Get("game")
-				if cID != tC.gameID {
-					t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, cID)
+				gID := r.URL.Query().Get("game")
+				if gID != tC.gameID {
+					t.Errorf("Unexpected game ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
 				}
 				w.WriteHeader(http.StatusOK)
 				w.Write(b)
@@ -120,7 +120,7 @@ func TestGameInfo(t *testing.T) {
 			}
 
 			if !reflect.DeepEqual(ci, res) {
-				t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+				t.Errorf("Unexpected game infos. Expected:\n%v\nActual:\n%v\n", res, ci)
 			}
 		})
 	}
@@ -128,21 +128,80 @@ func TestGameInfo(t *testing.T) {
 }
 
 func TestGameInfoExtended(t *testing.T) {
-	var res *GameInfoExtendedResp
-	b := unmarshalGoldenFileBytes(t, "game_info_extended.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetGameInfoExtended()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc   string
+		gameID string
+	}{
+		{
+			desc: "No game id",
+		},
+		{
+			desc:   "game id = 2",
+			gameID: "2",
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *GameInfoExtendedResp
+			b := unmarshalGoldenFileBytes(t, "game_info_extended.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				gID := r.URL.Query().Get("game")
+				if gID != tC.gameID {
+					t.Errorf("Unexpected game ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetGameInfoExtended(tC.gameID)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected game info extended. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
+	}
+}
+
+func TestGameProgress(t *testing.T) {
+	testCases := []struct {
+		desc   string
+		gameID string
+	}{
+		{
+			desc: "No game id",
+		},
+		{
+			desc:   "game id = 2",
+			gameID: "2",
+		},
+	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *GameProgressResp
+			b := unmarshalGoldenFileBytes(t, "game_progress.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				gID := r.URL.Query().Get("game")
+				if gID != tC.gameID {
+					t.Errorf("Unexpected game ids. Expected:\n%v\nActual:\n%v\n", tC.gameID, gID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
+
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetGameProgress(tC.gameID)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected game progress. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 
@@ -161,7 +220,7 @@ func TestUserRecent(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+		t.Errorf("Unexpected user recents. Expected:\n%v\nActual:\n%v\n", res, ci)
 	}
 }
 
@@ -175,25 +234,6 @@ func TestUserRank(t *testing.T) {
 
 	c := NewClient(withBaseURL(ts.URL))
 	ci, err := c.GetUserRank()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
-	}
-
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
-	}
-}
-
-func TestGameProgress(t *testing.T) {
-	var res *GameProgressResp
-	b := unmarshalGoldenFileBytes(t, "game_progress.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetGameProgress()
 	if err != nil {
 		t.Errorf("error retrieving users. Error: %+v", err)
 	}
