@@ -219,6 +219,25 @@ func TestListUserAchievementsByDate(t *testing.T) {
 	}
 }
 
+func TestListUserAchievementsByDateRange(t *testing.T) {
+	var res *UserByDateResp
+	b := unmarshalGoldenFileBytes(t, "user_by_date.json", &res)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+	}))
+
+	c := NewClient(withBaseURL(ts.URL))
+	ci, err := c.ListUserAchievementsByDateRange()
+	if err != nil {
+		t.Errorf("error retrieving users. Error: %+v", err)
+	}
+
+	if !reflect.DeepEqual(ci, res) {
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+	}
+}
+
 func unmarshalGoldenFileBytes(t *testing.T, filename string, payload interface{}) []byte {
 	p := filepath.Join("testdata", filename)
 	b, err := ioutil.ReadFile(p)
