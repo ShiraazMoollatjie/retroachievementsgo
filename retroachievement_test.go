@@ -49,21 +49,41 @@ func TestConsoleIDs(t *testing.T) {
 }
 
 func TestGameList(t *testing.T) {
-	var res *GameListResp
-	b := unmarshalGoldenFileBytes(t, "game_list.json", &res)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write(b)
-	}))
-
-	c := NewClient(withBaseURL(ts.URL))
-	ci, err := c.GetGameList()
-	if err != nil {
-		t.Errorf("error retrieving users. Error: %+v", err)
+	testCases := []struct {
+		desc      string
+		consoleID string
+	}{
+		{
+			desc: "No console id",
+		},
+		{
+			desc:      "console id = 2",
+			consoleID: "2",
+		},
 	}
+	for _, tC := range testCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			var res *GameListResp
+			b := unmarshalGoldenFileBytes(t, "game_list.json", &res)
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				cID := r.URL.Query().Get("console")
+				if cID != tC.consoleID {
+					t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", tC.consoleID, cID)
+				}
+				w.WriteHeader(http.StatusOK)
+				w.Write(b)
+			}))
 
-	if !reflect.DeepEqual(ci, res) {
-		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+			c := NewClient(withBaseURL(ts.URL))
+			ci, err := c.GetGameList(tC.consoleID)
+			if err != nil {
+				t.Errorf("error retrieving users. Error: %+v", err)
+			}
+
+			if !reflect.DeepEqual(ci, res) {
+				t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+			}
+		})
 	}
 }
 

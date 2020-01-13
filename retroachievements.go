@@ -6,7 +6,7 @@ import (
 
 func (c *Client) GetTopTenUsers() (*TopTenUsersResp, error) {
 	var res TopTenUsersResp
-	err := c.get(c.getURL("top_ten"), &res)
+	err := c.get(c.getURL("top_ten", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -16,7 +16,7 @@ func (c *Client) GetTopTenUsers() (*TopTenUsersResp, error) {
 
 func (c *Client) GetConsoleIDs() (*ConsoleIDsResp, error) {
 	var res ConsoleIDsResp
-	err := c.get(c.getURL("console_id"), &res)
+	err := c.get(c.getURL("console_id", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -24,10 +24,14 @@ func (c *Client) GetConsoleIDs() (*ConsoleIDsResp, error) {
 	return &res, nil
 }
 
-// TODO(shiraaz): Add consoleID parameter
-func (c *Client) GetGameList() (*GameListResp, error) {
+func (c *Client) GetGameList(consoleID string) (*GameListResp, error) {
 	var res GameListResp
-	err := c.get(c.getURL("game_list"), &res)
+	var p = make(map[string]string)
+	if consoleID != "" {
+		p["console"] = consoleID
+	}
+
+	err := c.get(c.getURL("game_list", p), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +42,7 @@ func (c *Client) GetGameList() (*GameListResp, error) {
 // TODO(shiraaz): Add gameID parameter
 func (c *Client) GetGameInfo() (*GameInfoResp, error) {
 	var res GameInfoResp
-	err := c.get(c.getURL("game_info"), &res)
+	err := c.get(c.getURL("game_info", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +53,7 @@ func (c *Client) GetGameInfo() (*GameInfoResp, error) {
 // TODO(shiraaz): Add gameID parameter
 func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
 	var res GameInfoExtendedResp
-	err := c.get(c.getURL("game_info_extended"), &res)
+	err := c.get(c.getURL("game_info_extended", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +64,7 @@ func (c *Client) GetGameInfoExtended() (*GameInfoExtendedResp, error) {
 // TODO(shiraaz): Add gameID parameter
 func (c *Client) GetGameProgress() (*GameProgressResp, error) {
 	var res GameProgressResp
-	err := c.get(c.getURL("game_progress"), &res)
+	err := c.get(c.getURL("game_progress", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +75,7 @@ func (c *Client) GetGameProgress() (*GameProgressResp, error) {
 // TODO(shiraaz): Add gameID and member parameter
 func (c *Client) GetUserRank() (*UserRankResp, error) {
 	var res UserRankResp
-	err := c.get(c.getURL("user_rank"), &res)
+	err := c.get(c.getURL("user_rank", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +85,7 @@ func (c *Client) GetUserRank() (*UserRankResp, error) {
 
 func (c *Client) GetUserRecent() (*UserRecentResp, error) {
 	var res UserRecentResp
-	err := c.get(c.getURL("user_recent"), &res)
+	err := c.get(c.getURL("user_recent", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +95,7 @@ func (c *Client) GetUserRecent() (*UserRecentResp, error) {
 
 func (c *Client) GetUserProgress() (*UserProgressResp, error) {
 	var res UserProgressResp
-	err := c.get(c.getURL("user_progress"), &res)
+	err := c.get(c.getURL("user_progress", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +105,7 @@ func (c *Client) GetUserProgress() (*UserProgressResp, error) {
 
 func (c *Client) GetUserSummary() (*UserSummaryResp, error) {
 	var res UserSummaryResp
-	err := c.get(c.getURL("user_summary"), &res)
+	err := c.get(c.getURL("user_summary", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +115,7 @@ func (c *Client) GetUserSummary() (*UserSummaryResp, error) {
 
 func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
 	var res UserByDateResp
-	err := c.get(c.getURL("user_by_date"), &res)
+	err := c.get(c.getURL("user_by_date", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +125,7 @@ func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
 
 func (c *Client) ListUserAchievementsByDateRange() (*UserByDateResp, error) {
 	var res UserByDateResp
-	err := c.get(c.getURL("user_by_date"), &res)
+	err := c.get(c.getURL("user_by_date", make(map[string]string)), &res)
 	if err != nil {
 		return nil, err
 	}
@@ -129,6 +133,10 @@ func (c *Client) ListUserAchievementsByDateRange() (*UserByDateResp, error) {
 	return &res, nil
 }
 
-func (c *Client) getURL(endpoint string) string {
-	return fmt.Sprintf("%s/%s.php?%s", c.baseURL, endpoint, c.buildReqQueryParams().Encode())
+func (c *Client) getURL(endpoint string, params map[string]string) string {
+	qp := c.buildReqQueryParams()
+	for k, v := range params {
+		qp.Add(k, v)
+	}
+	return fmt.Sprintf("%s/%s.php?%s", c.baseURL, endpoint, qp.Encode())
 }
