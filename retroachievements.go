@@ -99,8 +99,14 @@ func (c *Client) GetUserProgress() (*UserProgressResp, error) {
 	return &res, nil
 }
 
-func (c *Client) GetUserSummary() string {
-	panic("implement me!")
+func (c *Client) GetUserSummary() (*UserSummaryResp, error) {
+	var res UserSummaryResp
+	err := c.get(c.getURL("user_summary"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) GetUserFeed() string {

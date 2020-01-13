@@ -181,6 +181,25 @@ func TestUserProgress(t *testing.T) {
 	}
 }
 
+func TestUserSummary(t *testing.T) {
+	var res *UserSummaryResp
+	b := unmarshalGoldenFileBytes(t, "user_summary.json", &res)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write(b)
+	}))
+
+	c := NewClient(withBaseURL(ts.URL))
+	ci, err := c.GetUserSummary()
+	if err != nil {
+		t.Errorf("error retrieving users. Error: %+v", err)
+	}
+
+	if !reflect.DeepEqual(ci, res) {
+		t.Errorf("Unexpected console ids. Expected:\n%v\nActual:\n%v\n", res, ci)
+	}
+}
+
 func unmarshalGoldenFileBytes(t *testing.T, filename string, payload interface{}) []byte {
 	p := filepath.Join("testdata", filename)
 	b, err := ioutil.ReadFile(p)

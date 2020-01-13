@@ -202,3 +202,65 @@ type UserProgress struct {
 }
 
 type UserProgressResp map[string]UserProgress
+
+type Award struct {
+	NumPossibleAchievements RetroInt `json:"NumPossibleAchievements"`
+	PossibleScore           RetroInt `json:"PossibleScore"`
+	NumAchieved             RetroInt `json:"NumAchieved"`
+	ScoreAchieved           RetroInt `json:"ScoreAchieved"`
+	NumAchievedHardcore     RetroInt `json:"NumAchievedHardcore"`
+	ScoreAchievedHardcore   RetroInt `json:"ScoreAchievedHardcore"`
+}
+
+type RecentAchievement struct {
+	ID               string `json:"ID"`
+	GameID           string `json:"GameID"`
+	GameTitle        string `json:"GameTitle"`
+	Title            string `json:"Title"`
+	Description      string `json:"Description"`
+	Points           string `json:"Points"`
+	BadgeName        string `json:"BadgeName"`
+	IsAwarded        string `json:"IsAwarded"`
+	DateAwarded      string `json:"DateAwarded"`
+	HardcoreAchieved string `json:"HardcoreAchieved"`
+}
+
+type UserSummaryResp struct {
+	RecentlyPlayedCount int `json:"RecentlyPlayedCount"`
+	RecentlyPlayed      []struct {
+		GameID      string      `json:"GameID"`
+		ConsoleID   string      `json:"ConsoleID"`
+		ConsoleName string      `json:"ConsoleName"`
+		Title       string      `json:"Title"`
+		ImageIcon   string      `json:"ImageIcon"`
+		LastPlayed  string      `json:"LastPlayed"`
+		MyVote      interface{} `json:"MyVote"`
+	} `json:"RecentlyPlayed"`
+	MemberSince  string `json:"MemberSince"`
+	LastActivity struct {
+		ID           string      `json:"ID"`
+		Timestamp    string      `json:"timestamp"`
+		Lastupdate   string      `json:"lastupdate"`
+		Activitytype string      `json:"activitytype"`
+		User         string      `json:"User"`
+		Data         interface{} `json:"data"`
+		Data2        interface{} `json:"data2"`
+	} `json:"LastActivity"`
+	RichPresenceMsg    string                                  `json:"RichPresenceMsg"`
+	LastGameID         string                                  `json:"LastGameID"`
+	ContribCount       string                                  `json:"ContribCount"`
+	ContribYield       string                                  `json:"ContribYield"`
+	TotalPoints        string                                  `json:"TotalPoints"`
+	TotalTruePoints    string                                  `json:"TotalTruePoints"`
+	Permissions        string                                  `json:"Permissions"`
+	Untracked          string                                  `json:"Untracked"`
+	ID                 string                                  `json:"ID"`
+	UserWallActive     string                                  `json:"UserWallActive"`
+	Motto              string                                  `json:"Motto"`
+	Rank               string                                  `json:"Rank"`
+	Awarded            map[string]Award                        `json:"Awarded"`
+	RecentAchievements map[string]map[string]RecentAchievement `json:"RecentAchievements"`
+	Points             string                                  `json:"Points"`
+	UserPic            string                                  `json:"UserPic"`
+	Status             string                                  `json:"Status"`
+}
