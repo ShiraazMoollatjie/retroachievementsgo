@@ -109,8 +109,14 @@ func (c *Client) GetUserSummary() (*UserSummaryResp, error) {
 	return &res, nil
 }
 
-func (c *Client) ListUserAchievementsByDate() string {
-	panic("implement me!")
+func (c *Client) ListUserAchievementsByDate() (*UserByDateResp, error) {
+	var res UserByDateResp
+	err := c.get(c.getURL("user_by_date"), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
 
 func (c *Client) ListUserAchievementsByDateRange() string {

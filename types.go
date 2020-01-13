@@ -264,3 +264,23 @@ type UserSummaryResp struct {
 	UserPic            string                                  `json:"UserPic"`
 	Status             string                                  `json:"Status"`
 }
+
+type UserByDateResp struct {
+	Achievement [][]struct {
+		Date          string `json:"Date"`
+		HardcoreMode  string `json:"HardcoreMode"`
+		AchievementID string `json:"AchievementID"`
+		Title         string `json:"Title"`
+		Description   string `json:"Description"`
+		BadgeName     string `json:"BadgeName"`
+		Points        string `json:"Points"`
+		Author        string `json:"Author"`
+		GameTitle     string `json:"GameTitle"`
+		GameIcon      string `json:"GameIcon"`
+		GameID        string `json:"GameID"`
+		ConsoleName   string `json:"ConsoleName"`
+		CumulScore    int    `json:"CumulScore"`
+		BadgeURL      string `json:"BadgeURL"`
+		GameURL       string `json:"GameURL"`
+	} `json:"achievement"`
+}
